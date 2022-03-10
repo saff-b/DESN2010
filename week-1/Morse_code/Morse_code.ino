@@ -7,7 +7,7 @@ int dotLength = unit;
 int dashLength = unit * 3;
 int letterSpace = unit * 2;
 int wordSpaceLength = unit * 6;
-String message = "sos";
+String message = "Hello World!";
 
 void setup() {
   // put your setup code here, to run once:
