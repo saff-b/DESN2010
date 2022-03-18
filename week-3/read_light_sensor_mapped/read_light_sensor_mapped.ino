@@ -83,10 +83,9 @@ void loop() {
     }
   }
 
-    screaming = (fear > 1);
+    screaming = (fear > 0);
     
      Serial.println(fear);
-      
   if (screaming) {
     Serial.println("AAAAAA");
     
