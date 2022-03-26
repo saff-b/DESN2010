@@ -12,23 +12,23 @@ void setup() {
   pinMode(tiltSwitch, INPUT);
   pinMode(buzzer, OUTPUT);
   // interrupts https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/
-  attachInterrupt(digitalPinToInterrupt(tiltSwitch), makeBwoop, FALLING);
+  attachInterrupt(digitalPinToInterrupt(tiltSwitch), makeBwoop, RISING);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //if (bwoop) {
-
-  noInterrupts();
-    //Serial.print("bwooptime!");
+  if (bwoop) {
+    detachInterrupt(digitalPinToInterrupt(tiltSwitch));
+    Serial.print("detached -- ");
     for (int i = 440; i < 600; i++) {
       tone(buzzer, i, 50);
       delay(5);
     }
     noTone(buzzer);    
-    //bwoop = false;
-  interrupts();
-  //};
+    bwoop = false;
+    attachInterrupt(digitalPinToInterrupt(tiltSwitch), makeBwoop, RISING);
+    Serial.println("reattach");
+  };
 }
 
 void makeBwoop() {
