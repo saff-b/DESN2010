@@ -8,8 +8,6 @@ int yAxis = A1;
 // int button = 5;
 int buzzer = 7;
 
-int ambientLightSensor = A2;
-
 int prevxValue = -100;
 int prevyValue = -100;
 int happy = 1000;
@@ -29,8 +27,6 @@ void loop() {
   // read the values on the joystick
   int xValue = analogRead(xAxis);
   int yValue = analogRead(yAxis);
-  int lightLevel = analogRead(ambientLightSensor);
-  Serial.println(lightLevel);
   int xDiff = getDiff(xValue, prevxValue);
   int yDiff = getDiff(yValue, prevyValue);
 
