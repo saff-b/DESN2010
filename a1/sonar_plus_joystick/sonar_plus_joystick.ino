@@ -9,7 +9,7 @@
 // joystick axes
 int xAxis = A0;
 int yAxis = A1;
-// int button = 5;
+int button = 3;
 
 // buzzer: used for sound
 int buzzer = 7;
@@ -23,9 +23,10 @@ long duration; // for sonar
 int distance; // for sonar
 int prevxValue; // for joystick
 int prevyValue; // for joystick
+
 int smoothingFactor = 30; // for sonar reads
-int happy = 10000; // initial happiness val
-int chirpDelay = 20; // default chirp delay
+int charge = 0; // initial happiness val
+int streak = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -36,14 +37,14 @@ void setup() {
   /* JOYSTICK SET UP */
   prevxValue = analogRead(xAxis);
   prevyValue = analogRead(yAxis);
+  /* JOYSTICK BUTTON INTERRUPT : currently disabled because the interrupt triggers randomly :( */
+  pinMode(button, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(button), decharge, RISING);
 }
 
 void loop() {
   /* STEP 1: get distance from sensor! */
-  // handle dropout and outlier data with this
-  int tempSmoothingFactor = smoothingFactor;
-  // reset distance, save previous value in case of major loss
-  int tempDistance = distance;
+  // reset distance
   distance = 0;
   for (int i = 0; i < smoothingFactor; i++) {
     int tempDistance;
@@ -57,27 +58,20 @@ void loop() {
     // Reads the echoPin, returns the sound wave travel time in microseconds
     duration = pulseIn(echoPin, HIGH);
     // Calculating the distance
-    tempDistance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
-    if (tempDistance < 1000) {
-      distance = distance + tempDistance;
-    }
-    else {
-      tempSmoothingFactor--;
-    }
+    distance = distance + duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
   }
-  distance = distance / tempSmoothingFactor;
-  // a 0 value is invalid so we reset to the prior known value
-  if (distance = 0) {
-    distance = tempDistance;
-  }
+  distance = distance / smoothingFactor;
 
-  if (distance > 30) {
-    chirpDelay = 15;
+  /* STEP 2: Convert the distance to the length of the tone that is to be played */
+  int toneLength; // delcare local variable for how long the tone sounds for
+  if (distance > 30 || distance < 0) {
+    toneLength = 10; // default chirp delay
   }
   else {
-    chirpDelay = map (distance, 0, 30, 5, 15);
+    toneLength = map (distance, 0, 30, 300, 10); // otherwise map the distance value to the delay
   }
 
+  /* STEP 3: get how much the joystick has moved since the last read */
   // read the values on the joystick
   int xValue = analogRead(xAxis);
   int yValue = analogRead(yAxis);
@@ -86,38 +80,51 @@ void loop() {
   int xDiff = getDiff(xValue, prevxValue);
   int yDiff = getDiff(yValue, prevyValue);
 
-  if (happy < 10000 && (xDiff > 3 || yDiff > 3)) {
-    happy+=10;
+  // add to the charge if the joystick has moved
+  if (charge < 1000 && (xDiff > 3 || yDiff > 3)) {
+    // the increase is exponential
+    charge = (charge + 10) + streak * 2;
+    streak++;
+  } else {
+    streak = 0;
   }
 
-  int purrPitch;
-  if (happy > 0) {
+  // calculate the pitch based on both the charge and how much the joystick moved
+  int pitch;
+  if (charge > 0) {
     int diff;
     if (xDiff > 3 && yDiff > 3) {
-      diff = (xDiff + yDiff);
+      diff = (xDiff + yDiff) / 2;
     } else {
       diff = max (xDiff, yDiff);
     }
-    // the more you wiggle the stick the higher the pitch goes
-    purrPitch = map (diff, 0, 1024, 0, 600);
-    // the longer that the joystick has been rubbed for then it is the higher the pitch
-    purrPitch = purrPitch + (happy / 100);
+    // the more you wiggle the stick the higher the pitch goes,
+    // and the longer that the joystick has been rubbed for then it is the higher the pitch
+    pitch = map (diff, 0, 512, charge, charge + 500);
     // decrease happiness value slightly less than it was increased
-    happy-=5;
+    charge-=5;
   }
 
+  /* STEP 4: Play the tone using the parameters! */
+  if (charge > 1) {
+  // tone: pin, pitch, duration
+    tone(buzzer, pitch, toneLength);
+  }
+
+  // save the x and y values for comparison next loop
   prevxValue = xValue;
   prevyValue = yValue;
-  if (happy > 1) {
-  // pin, pitch, duration
-    Serial.println(purrPitch);
-    tone(buzzer, purrPitch, chirpDelay);
-    delay(chirpDelay);        // delay in between reads for stability
-  // make sure the tone stops before the next one
-    noTone(buzzer);
+
+  // ensure charge is within bounds
+  if (charge < 0) {
+    charge = 0;
   }
 }
 
 int getDiff(int a,int b) {
   return abs(a - b);
 }
+
+void decharge() {
+  charge = -100;
+} 
