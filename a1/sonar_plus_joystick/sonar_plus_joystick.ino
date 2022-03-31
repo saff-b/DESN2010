@@ -30,7 +30,6 @@ int streak = 0;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600); // // Serial Communication is starting with 9600 of baudrate speed
   /* SONAR SET UP */
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
@@ -101,7 +100,7 @@ void loop() {
     // the more you wiggle the stick the higher the pitch goes,
     // and the longer that the joystick has been rubbed for then it is the higher the pitch
     pitch = map (diff, 0, 512, charge, charge + 500);
-    // decrease happiness value slightly less than it was increased
+    // decrease happiness value, less than it was increased
     charge-=5;
   }
 
@@ -121,10 +120,12 @@ void loop() {
   }
 }
 
+// return difference between 2 values
 int getDiff(int a,int b) {
   return abs(a - b);
 }
 
+// decharge the charge completely
 void decharge() {
   charge = -100;
 } 
