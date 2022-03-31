@@ -36,7 +36,7 @@ void setup() {
   /* JOYSTICK SET UP */
   prevxValue = analogRead(xAxis);
   prevyValue = analogRead(yAxis);
-  /* JOYSTICK BUTTON INTERRUPT : currently disabled because the interrupt triggers randomly :( */
+  /* JOYSTICK BUTTON INTERRUPT */
   pinMode(button, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(button), decharge, RISING);
 }
@@ -125,7 +125,7 @@ int getDiff(int a,int b) {
   return abs(a - b);
 }
 
-// decharge the charge completely
+// interrupt function to decharge the charge completely
 void decharge() {
   charge = -100;
 } 
