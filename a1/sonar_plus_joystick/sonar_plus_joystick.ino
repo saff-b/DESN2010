@@ -67,7 +67,7 @@ void loop() {
     toneLength = 10; // default chirp delay
   }
   else {
-    toneLength = map (distance, 0, 30, 300, 10); // otherwise map the distance value to the delay
+    toneLength = map (distance, 0, 30, 50, 10); // otherwise map the distance value to the delay
   }
 
   /* STEP 3: get how much the joystick has moved since the last read */
@@ -75,15 +75,15 @@ void loop() {
   int xValue = analogRead(xAxis);
   int yValue = analogRead(yAxis);
   
-  //get the difference between this read and the previous read
-  int xDiff = getDiff(xValue, prevxValue);
-  int yDiff = getDiff(yValue, prevyValue);
+  //get the distance between this read and the previous read
+  // jsdist = joystick distance
+  float jsdist = getDist(xValue, yValue, prevxValue, prevyValue);
 
   // add to the charge if the joystick has moved
-  if (charge < 1000 && (xDiff > 3 || yDiff > 3)) {
-    // the increase is exponential
-    charge = (charge + 10) + streak * 2;
-    streak++;
+  if (charge < 1000 && jsdist > 5) {
+    // the increase depends on the distance in the previous iteration
+    charge += streak;
+    streak += jsdist/100;
   } else {
     streak = 0;
   }
@@ -91,16 +91,10 @@ void loop() {
   // calculate the pitch based on both the charge and how much the joystick moved
   int pitch;
   if (charge > 0) {
-    int diff;
-    if (xDiff > 3 && yDiff > 3) {
-      diff = (xDiff + yDiff) / 2;
-    } else {
-      diff = max (xDiff, yDiff);
-    }
     // the more you wiggle the stick the higher the pitch goes,
     // and the longer that the joystick has been rubbed for then it is the higher the pitch
-    pitch = map (diff, 0, 512, charge, charge + 500);
-    // decrease happiness value, less than it was increased
+    pitch = map (jsdist, 0, 1024, charge, charge + 700);
+    // decrease happiness value
     charge-=5;
   }
 
@@ -120,12 +114,13 @@ void loop() {
   }
 }
 
-// return difference between 2 values
-int getDiff(int a,int b) {
-  return abs(a - b);
+// return distance between two points, based on pythag theorem
+float getDist(int x1, int y1, int x2, int y2) {
+  return sqrt(pow(x2 - x1, 2) +
+              pow(y2 - y1, 2));
 }
 
 // interrupt function to decharge the charge completely
 void decharge() {
   charge = -100;
-} 
+}
