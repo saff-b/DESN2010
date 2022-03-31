@@ -1,9 +1,10 @@
 /*
-  Adding sonar to the joystick
-  distance calculation modified from:
+  Adding the ultrasonic sensor to the joystick
+  ultrasonic distance calculation modified from:
   https://create.arduino.cc/projecthub/abdularbi17/ultrasonic-sensor-hc-sr04-with-arduino-tutorial-327ff6
   smoothing:
   https://www.youtube.com/watch?v=_yB-DDOFrhI
+  Used analogue serial read example as a starting point
 */
 
 // joystick axes
@@ -30,7 +31,7 @@ int streak = 0;
 
 void setup() {
   // put your setup code here, to run once:
-  /* SONAR SET UP */
+  /* ULTRASONIC SET UP */
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
   /* JOYSTICK SET UP */
@@ -71,11 +72,10 @@ void loop() {
   }
 
   /* STEP 3: get how much the joystick has moved since the last read */
-  // read the values on the joystick
   int xValue = analogRead(xAxis);
   int yValue = analogRead(yAxis);
   
-  //get the distance between this read and the previous read
+  // get the distance between this read and the previous read
   // jsdist = joystick distance
   float jsdist = getDist(xValue, yValue, prevxValue, prevyValue);
 
