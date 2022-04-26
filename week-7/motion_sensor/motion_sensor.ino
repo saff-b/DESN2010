@@ -1,6 +1,6 @@
 /* motion sensor */
 
-int sensorPin = 9;
+int sensorPin = 3;
 int ledPin = 13;
 
 int motion = HIGH; // low = no motion ; high = motion
@@ -20,13 +20,13 @@ void loop() {
   if (sensorData = HIGH) {
     if (motion = LOW) {
       motion = HIGH;
+      digitalWrite(ledPin, HIGH);
     }
-    digitalWrite(ledPin, HIGH);
   } else {
     if (motion = HIGH) {
       motion = LOW;
+      digitalWrite(ledPin, LOW);
     }
-    digitalWrite(ledPin, LOW);
   }
   Serial.println(sensorData);
 }

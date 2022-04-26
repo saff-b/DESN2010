@@ -14,5 +14,3 @@ void loop() {
   digitalWrite(ledPin,LOW);
   delay(1000);
 }
-
-
