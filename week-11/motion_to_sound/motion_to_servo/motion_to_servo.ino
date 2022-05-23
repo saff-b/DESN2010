@@ -17,10 +17,12 @@ SoftwareSerial mySoftwareSerial(10, 11); // RX, TX -- used by mp3 player
 int motionSensor = 2; // the pin for the motion sensor
 
 /* CONFIG VARIABLES : change these to change things about the program */
-int sensitivity = 1000; // the max value for how high the detection buffer value can go. 
+int sensitivity = 2000; // the max value for how high the detection buffer value can go. 
 // note: the lower it is, the more sensitive the system is to movement
-int minVolume = 10; // the minimum volume
-int maxVolume = 30; // the maximum volume
+int increaseRate = 3; // the rate which the sensitivity buffer will increase. Higher = faster increase in volume
+int degredationRate = 1; // the rate which the sensitivity buffer will degrade. Higher = faster decrease in volume
+int minVolume = 5; // the minimum volume
+int maxVolume = 29; // the maximum volume
 
 /* STATIC VARIABLES */ 
 int volume = minVolume; // default volume. Speed will be mapped to this.
@@ -66,12 +68,12 @@ void loop() {
   if (move == HIGH) {
     // do movement thing
     if (detection < sensitivity) {
-      detection = detection + 25;
+      detection = detection + increaseRate;
     }
   } else {
     // do no movement thing
     if (detection > 0) {
-      detection = detection - 1;
+      detection = detection - degredationRate;
     }
   }
 
