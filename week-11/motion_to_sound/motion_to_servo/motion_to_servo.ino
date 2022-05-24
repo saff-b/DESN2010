@@ -19,10 +19,11 @@ int motionSensor = 2; // the pin for the motion sensor
 /* CONFIG VARIABLES : change these to change things about the program */
 int sensitivity = 2000; // the max value for how high the detection buffer value can go. 
 // note: the lower it is, the more sensitive the system is to movement
-int increaseRate = 3; // the rate which the sensitivity buffer will increase. Higher = faster increase in volume
-int degredationRate = 1; // the rate which the sensitivity buffer will degrade. Higher = faster decrease in volume
+int increaseRate = 1; // the rate which the sensitivity buffer will increase. Higher = faster increase in volume
+int degredationRate = 2; // the rate which the sensitivity buffer will degrade. Higher = faster decrease in volume
 int minVolume = 5; // the minimum volume
-int maxVolume = 29; // the maximum volume
+int maxVolume = 25; // the maximum volume
+int delayRate = 50; // in miliseconds.
 
 /* STATIC VARIABLES */ 
 int volume = minVolume; // default volume. Speed will be mapped to this.
@@ -41,7 +42,7 @@ void setup() {
   /* set up mp3 player */
 
   mySoftwareSerial.begin(9600);
-  Serial.begin(115200);
+  Serial.begin(115200); // this will print mp3 player information
   
   Serial.println();
   Serial.println(F("DFRobot DFPlayer Mini Demo"));
@@ -58,7 +59,7 @@ void setup() {
   Serial.println(F("DFPlayer Mini online."));
   
   myDFPlayer.volume(0);  //Set volume value. From 0 to 30
-  myDFPlayer.play(2);  //play the laughter track
+  myDFPlayer.loop(2);  //play the laughter track on loop
 }
 
 void loop() {
@@ -88,6 +89,7 @@ void loop() {
   
   myDFPlayer.volume(volume);  //Set volume value. From 0 to 30
   Serial.println(detection);
+  delay(delayRate);
 }
 
 
