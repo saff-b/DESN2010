@@ -4,7 +4,7 @@
   DFPlayer - A Mini MP3 Player For Arduino
     <https://www.dfrobot.com/index.php?route=product/product&product_id=1121>
 
-  combined with my motion to servo code  
+  combined with my motion to servo code (https://github.com/saff-b/DESN2010/blob/main/week-9/motion_to_servo/motion_to_servo.ino)
 */
 
 // include the Servo library
