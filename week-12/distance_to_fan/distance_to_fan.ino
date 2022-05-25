@@ -23,6 +23,7 @@ void setup() {
   // put your setup code here, to run once:
   /* PIN SET UP */
   pinMode(fanPin, OUTPUT); // Sets fan pin as an OUTPUT
+  digitalWrite(fanPin, HIGH); // turn fan off to start
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
   distance = getDist(smoothing);
