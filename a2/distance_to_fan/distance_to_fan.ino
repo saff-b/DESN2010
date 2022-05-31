@@ -14,6 +14,7 @@ int trigPin = 10; // ultrasonic trigger
 /* CONFIG VARIABLES */
 int smoothing = 30; // for ultrasonic reads
 int detectionRange = 100; // distance in CM
+int fanTime = 20000; // how long the fan stays on once it has been triggered.
 
 /* GLOBAL VARIABLES */
 int distance; // for ultrasonic
@@ -45,7 +46,7 @@ void loop() {
       ultrasonicReadSpacing = 30; // continuously check distance so that the fan is responsive
     } else {
       digitalWrite(fanPin, LOW); // this turns the fan on
-      ultrasonicReadSpacing = 20000;  // keep the fan on for 20 seconds
+      ultrasonicReadSpacing = fanTime;  // keep the fan on for 20 seconds
     }
   }
 }
