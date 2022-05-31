@@ -50,7 +50,7 @@ void loop() {
   }
 }
 
-// Function that takes a reading from the ultrasonic sensor with a 
+// Function that takes a reading from the ultrasonic sensor
 int getDist(int smoothingFactor) {
   Serial.println("getting distance!");
   int d = 0;
