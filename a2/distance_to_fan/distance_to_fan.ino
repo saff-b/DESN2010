@@ -1,5 +1,5 @@
 /* 
-  blow clothes using the fan when a person is picked in a certain distance up using the ultrasonic sensor (uss)
+  blow clothes using the fan when a person is detected within a certain distance up using the ultrasonic sensor
   ultrasonic distance calculation modified from:
   https://create.arduino.cc/projecthub/abdularbi17/ultrasonic-sensor-hc-sr04-with-arduino-tutorial-327ff6
   smoothing:
@@ -33,7 +33,7 @@ void setup() {
 
 void loop() {
    // we only get the distance once per ultrasonicRadSpacing. 
-  // this allows for the fan to run smoothly without being interrupted by the distance sensor going off
+  // this allows for easier expansion to a servo based implementation
   static unsigned long timer = millis();
   if (millis() - timer > ultrasonicReadSpacing) {
     timer = millis();
@@ -46,12 +46,13 @@ void loop() {
       ultrasonicReadSpacing = 30; // continuously check distance so that the fan is responsive
     } else {
       digitalWrite(fanPin, LOW); // this turns the fan on
-      ultrasonicReadSpacing = fanTime;  // keep the fan on for 20 seconds
+      ultrasonicReadSpacing = fanTime;  // keep the fan on for the fantime
     }
   }
 }
 
 // Function that takes a reading from the ultrasonic sensor
+// Modified from this https://create.arduino.cc/projecthub/abdularbi17/ultrasonic-sensor-hc-sr04-with-arduino-tutorial-327ff6
 int getDist(int smoothingFactor) {
   Serial.println("getting distance!");
   int d = 0;

@@ -7,7 +7,7 @@
   combined with my motion to servo code (https://github.com/saff-b/DESN2010/blob/main/week-9/motion_to_servo/motion_to_servo.ino)
 */
 
-// include the mp3 player library
+// include the necessary libraries
 #include "Arduino.h"
 #include "SoftwareSerial.h"
 #include "DFRobotDFPlayerMini.h"
@@ -41,14 +41,13 @@ void setup() {
   
   /* set up mp3 player - from sample code https://www.dfrobot.com/index.php?route=product/product&product_id=1121 */
 
-  mySoftwareSerial.begin(9600);
-  Serial.begin(115200); // this will print mp3 player information
+  mySoftwareSerial.begin(9600); // Use softwareSerial to communicate with mp3 player module.
+  Serial.begin(115200); // information about the MP3 player function will be printed on this line
   
   Serial.println();
-  Serial.println(F("DFRobot DFPlayer Mini Demo"));
-  Serial.println(F("Initializing DFPlayer ... (May take 3~5 seconds)"));
+  Serial.println(F("Initializing DFPlayer ... (May take 3~5 seconds)")); // user information
   
-  if (!myDFPlayer.begin(mySoftwareSerial)) {  //Use softwareSerial to communicate with mp3.
+  if (!myDFPlayer.begin(mySoftwareSerial)) { // if the mp3 player doesn't start, print this  
     Serial.println(F("Unable to begin:"));
     Serial.println(F("1.Please recheck the connection!"));
     Serial.println(F("2.Please insert the SD card!"));
@@ -58,8 +57,8 @@ void setup() {
   }
   Serial.println(F("DFPlayer Mini online."));
   
-  myDFPlayer.volume(0);  //Set volume value. From 0 to 30
-  myDFPlayer.loop(2);  //play the laughter track on loop
+  myDFPlayer.volume(0);  // Set volume value. From 0 to 30
+  myDFPlayer.loop(2);  // play the laughter track on loop
 }
 
 void loop() {
@@ -67,32 +66,33 @@ void loop() {
   int move = digitalRead(motionSensor); 
 
   if (move == HIGH) {
-    // do movement thing
+    // if there is movement, then increase the detection meter
     if (detection < sensitivity) {
       detection = detection + increaseRate;
     }
   } else {
-    // do no movement thing
+    // when there is no movement, the detection meter degrades
     if (detection > 0) {
       detection = detection - degredationRate;
     }
   }
 
   if (detection > 0) {
+    // if the detection meter is currently above 0 then map the volume to match with that
     volume = map (detection, 0, sensitivity, minVolume, maxVolume);
-    // if the sound is not currently playing, start it
   } else {
-    // if no movement is detected, set volume to 0
+    // if the detection meter is depleted, set volume to 0
     volume = 0;
   }
   
   myDFPlayer.volume(volume);  // Set volume value
-  Serial.println(detection);
-  delay(delayRate);
+  delay(delayRate); // this delays readings. 
+  // Some PIR motion detectors have a physical dial for this but mine broke so I added it on the code side.
 }
 
 
-// error messages. Source: https://www.dfrobot.com/index.php?route=product/product&product_id=1121
+// Error messages for the MP3 player. Used for debugging issues. 
+// Source: https://www.dfrobot.com/index.php?route=product/product&product_id=1121
 void printDetail(uint8_t type, int value){
   switch (type) {
     case TimeOut:
