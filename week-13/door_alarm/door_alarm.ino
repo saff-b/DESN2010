@@ -27,8 +27,6 @@ void loop() {
   if (digitalRead(tiltSwitch) == LOW) {
     play(zelda_tones, zelda_durations);
     delay (5000); // prevents it triggering multiple times in rapid succession
-  } else {
-    noTone(buzzer);
   }
 }
 
