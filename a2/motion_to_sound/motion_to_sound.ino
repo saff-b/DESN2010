@@ -2,7 +2,7 @@
   motion sensor -> mp3 sound
   uses code from examples for :
   DFPlayer - A Mini MP3 Player For Arduino
-    <https://www.dfrobot.com/index.php?route=product/product&product_id=1121>
+    <https://wiki.dfrobot.com/DFPlayer_Mini_SKU_DFR0299>
 
   combined with my motion to servo code (https://github.com/saff-b/DESN2010/blob/main/week-9/motion_to_servo/motion_to_servo.ino)
 */
@@ -92,7 +92,7 @@ void loop() {
 
 
 // Error messages for the MP3 player. Used for debugging issues. 
-// Source: https://www.dfrobot.com/index.php?route=product/product&product_id=1121
+// Source: https://wiki.dfrobot.com/DFPlayer_Mini_SKU_DFR0299
 void printDetail(uint8_t type, int value){
   switch (type) {
     case TimeOut:
