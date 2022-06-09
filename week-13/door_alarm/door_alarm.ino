@@ -26,7 +26,7 @@ void loop() {
   // put your main code here, to run repeatedly:
   if (digitalRead(tiltSwitch) == LOW) {
     play(zelda_tones, zelda_durations);
-    delay (5000); // prevents it triggering multiple times in rapid succession
+    delay (20000); // prevents it triggering multiple times in rapid succession
   }
 }
 
